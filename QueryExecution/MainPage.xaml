@@ -6,8 +6,125 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <SplitView IsPaneOpen="True"
+           DisplayMode="Inline"
+           OpenPaneLength="296" Margin="0,0,-439,0">
+        <SplitView.Pane>
+            <ListView x:Name="ListView1" IsItemClickEnabled="True" ItemClick="listviewclick" >
+                <ListView.Header>
+                    <Style TargetType="ListViewHeaderItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListView.Header>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid Height="30" Background="DarkGray">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Uid="tbRank" TextWrapping="Wrap" Text="Source" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="7,2,0,0" FontWeight="ExtraBold" FontSize="18" />
+                            
+                        </Grid>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
 
-    </Grid>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="LightGray" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Margin="0,50,0,0">
+                                <TextBlock Text="{Binding source_name}" Tag="{Binding source_name}"
+                               FontSize="14" Foreground="Green" TextWrapping="Wrap" Name="sourcename"/>
+                            </Border>
+                            <Border Background="LightGray"  Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" >
+                                <Button Visibility="Visible" Content="Update" Tag="{Binding source_name}" Click="ManageDataSources_Click" FontSize="8"></Button>
+                            </Border>
+                            <Border Background="LightBlue" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" >
+                                <Button Visibility="Visible" Content="Delete" Tag="{Binding source_name}" Click="ManageDataSources_Click" FontSize="8" ></Button>
+                            </Border>
+                            <Border Background="LightBlue" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" >
+                                <Button Visibility="Visible" Content="Add New" Tag="{Binding source_name}" Click="ManageDataSources_Click" FontSize="8" ></Button>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </SplitView.Pane>
+
+        <Grid>
+            <Pivot x:Name="rootPivot" Title="Query Execution" SelectionChanged="rootPivot_SelectionChanged">
+                <PivotItem Header="Execute Query" >
+                    <!--Pivot content goes here-->
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="150"/>
+
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                      
+                            <ListView  ItemsSource="{Binding itemlist}" Name="List1" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="500" Name="List1" Margin="0,0,-950,0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50" />
+
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding tablename}" Tag="{Binding tablename}"
+                               FontSize="14" Foreground="Green" TextWrapping="Wrap" Name="listitem"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+
+                                </Grid>
+                    
+                </PivotItem>
+                <PivotItem Header="Manage Data Sources" Visibility="Visible" Name="PivotSources">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Background="White" Width="480">
+
+                        <TextBlock Text ="Add New Data Source" Name="HeaderText" HorizontalAlignment="Left" FontSize="18" FontWeight="Bold"/>
+                        <ComboBox Name="sourcesDropDown" HorizontalAlignment="Left" SelectionChanged="ComboBox_SelectionChanged" />
+                      
+                        <TextBlock Text =""  HorizontalAlignment="Left"/>
+                        <TextBlock Text ="Enter Connection String" Name="Source_select" HorizontalAlignment="Left"/>
+
+
+                        <TextBox Name="Connstr" HorizontalAlignment="Left" Width="300" TextWrapping="Wrap"/>
+                        <TextBlock Text =""  HorizontalAlignment="Left"/>
+                        <TextBlock Text ="Enter Connection Name" HorizontalAlignment="Left" TextWrapping="Wrap" />
+                       
+                        <TextBox Name="ConnectionName" HorizontalAlignment="Left"  Width="300" TextWrapping="Wrap" />
+                        <TextBlock Text =""  HorizontalAlignment="Left"/>
+                        <Button Content="Add" Name="DataSourceButton" IsEnabled="True" HorizontalAlignment="Left"  Click="Button_Click_2" ClickMode="Press" />
+                        <TextBox Name="source_ID" HorizontalAlignment="Left"  Visibility="Collapsed"/>
+                    </StackPanel>
+                </PivotItem>
+                <PivotItem Header="Settings">
+                   
+                </PivotItem>
+            </Pivot>
+        
+
+        </Grid>
+    </SplitView>
 </Page>
