@@ -39,6 +39,7 @@ namespace QueryExecution.Classes
         public int ID { get; set; }
         public int DataConnectionId { get; set; }
         public string TableName { get; set; }
+        public int Selected { get; set; }
     }
     public class datasources
     {

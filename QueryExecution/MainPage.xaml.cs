@@ -43,7 +43,15 @@ namespace QueryExecution
     public class ListItems
     {
         public string tableName { get; set; }
+
+        public string connectionName { get; set; }
         public string color { get; set; }
+
+        public string image { get; set; }
+
+        public string visibility { get; set; }
+         
+        public int id { get; set; }
     }
 
     public sealed partial class MainPage : Page
@@ -82,13 +90,14 @@ namespace QueryExecution
             // ListView1.ItemsSource
             CollectionViewSource childCollection = new CollectionViewSource();
             childCollection.Source = ConfigClass.datasourceslist;
-            datasourceslist.Sort(delegate (DataSourceList X, DataSourceList Y)
+           datasourceslist.Sort(delegate (DataSourceList X, DataSourceList Y)
             {
                 if (X.source_name == null && Y.source_name == null) return 0;
                 else if (X.source_name == null) return -1;
                 else if (Y.source_name == null) return -1;
                 else return (X.source_name.CompareTo(Y.source_name));
             });
+            
 
             Binding binding = new Binding();
             binding.Source = childCollection;
@@ -96,6 +105,84 @@ namespace QueryExecution
             ListView1.ItemsSource = datasourceslist;
 
         }
+        void setList1ListView()
+        {
+            QueryContext context = new QueryContext();
+
+
+            if (context.datatables.Count() == 0)
+            {
+                 context.datatables.Add(new DataTables { DataConnectionId = 3, TableName = "Test" });
+                 context.datatables.Add(new DataTables { DataConnectionId = 3, TableName = "Test2" });
+                 context.datatables.Add(new DataTables { DataConnectionId = 3, TableName = "Test3" });
+                context.datatables.Add(new DataTables { DataConnectionId = 4, TableName = "Test4" }); 
+                 context.SaveChanges();
+            }
+            if (rootPivot.SelectedIndex == 0)
+            {
+                var results = from connect in context.dataconnections
+                              join table in context.datatables on connect.id equals table.DataConnectionId
+                              select new { Connection = connect.Name, Table = table.TableName, ID=table.ID};
+
+                var results2 = from connect in context.dataconnections
+                               select new { Connection = connect.Name, connectid = connect.id };
+
+                var results3 = from table in context.datatables
+                               select new { connectionid = table.DataConnectionId, tablename = table.TableName,
+                                 id = table.ID};
+
+                string previousConn = "";
+                foreach (var result in results)
+                {
+                    if (previousConn == result.Connection)
+                    {
+                        mitemlist.Add(new ListItems
+                        {
+                            tableName = result.Table,
+                            color = "blue",
+                            connectionName = result.Connection,
+                            image = "/Assets/plus-sign-22.jpg",
+                            visibility = "Visible",
+                            id = result.ID
+                        });
+                    }
+                    else
+                    {
+                        mitemlist.Add(new ListItems
+                        {
+                            tableName = result.Connection,
+                            color = "orange",
+                            connectionName = result.Connection,
+                           image = "",
+                            visibility = "Visible",
+                            id = result.ID
+                        });
+                    }
+                        previousConn = result.Connection;
+        
+
+                    }
+                
+            }
+
+            // ListView1.ItemsSource
+         //  CollectionViewSource childCollection = new CollectionViewSource();
+        //    childCollection.Source = mitemlist;// ConfigClass.datasourceslist;
+         /*   mitemlist.Sort(delegate(ListItems X, ListItems Y)
+            {
+                if (X.tableName == null && Y.tableName == null) return 0;
+                else if (X.tableName == null) return -1;
+                else if (Y.tableName == null) return -1;
+                else return (X.tableName.CompareTo(Y.tableName));
+            });
+            */
+     //       Binding binding = new Binding();
+      //      binding.Source = childCollection;
+         //       BindingOperations.SetBinding(ListView1, ListView.ItemsSourceProperty, binding);
+           List1.ItemsSource = mitemlist;
+
+        }
+
 
         public class DataSources
         {
@@ -162,47 +249,16 @@ namespace QueryExecution
         }
 
 
-        public ObservableCollection<ListItems> mitemlist = new ObservableCollection<ListItems>();
+        public List<ListItems> mitemlist = new List<ListItems>();
 
-        public ObservableCollection<ListItems> itemlist
-        {
-            get
-            {
-                return mitemlist;
-            }
-        }
+ 
         private void rootPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-
-        QueryContext context = new QueryContext();
-
-
-            if (context.datatables.Count() == 0)
-            {
-                context.datatables.Add(new DataTables { DataConnectionId = 2, TableName = "Test" });
-                context.datatables.Add(new DataTables { DataConnectionId = 2, TableName = "Test2" });
-                context.datatables.Add(new DataTables { DataConnectionId = 2, TableName = "Test3" });
-                context.SaveChanges();
-            }
             if (rootPivot.SelectedIndex == 0)
             {
-                var results = from connect in context.dataconnections
-                              join table in context.datatables on connect.id equals table.DataConnectionId                           
-                              select new { Connection=connect.Name, Table=table.TableName };
-                              
-               var results2 = from connect in context.dataconnections
-                               select new { Connection = connect.Name, connectid = connect.id };
-
-                var results3 = from table in context.datatables
-                               select new { connectionid = table.DataConnectionId, tablename = table.TableName };
-
-                string connection = "";
-                foreach (var result in results)
-                {
-                    mitemlist.Add(new ListItems { tableName = result.Table, color = "blue" });
-                }
-                      }
+                setList1ListView();
+             }
             if (rootPivot.SelectedIndex == 1)
             {
                 HeaderText.Text = "Add Data Source";
@@ -310,6 +366,12 @@ context.SaveChanges();
             //ListView1.Items.Add(sources);
             setListView();
 }
-}
+
+        private void Expand_click(object sender, RoutedEventArgs e)
+        {
+            Button button = e.OriginalSource as Button;
+
+        }
+    }
 
 }

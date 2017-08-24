@@ -80,23 +80,39 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                       
-                            <ListView  ItemsSource="{Binding itemlist}" Name="List1" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="500" Name="List1" Margin="0,0,-950,0">
+                            <ListView  Name="List1" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="500" Margin="0,0,-950,0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="20" />
+											<ColumnDefinition Width="180" />
 
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding tablename}" Tag="{Binding tablename}"
-                               FontSize="14" Foreground="Green" TextWrapping="Wrap" Name="listitem"/>
+										</Grid.ColumnDefinitions>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+
+										<Button HorizontalAlignment="Left" Name="Expand" Height="15" Width="15" VerticalAlignment="Top" 
+							              Grid.Column="0" Visibility="{Binding visibility}" Tag="{Binding id}" Click="Expand_click" >
+											<Button.Template>
+											<ControlTemplate>
+													<Image Source="{Binding image}"/>
+											</ControlTemplate>
+											</Button.Template>
+											</Button>
+										<TextBlock Text="{Binding tableName}" Tag="{Binding tableName}" 
+                               FontSize="14" Foreground="{Binding color}" 
+			                  TextWrapping="Wrap" Name="listitem" Visibility=  "{Binding visibility}" Grid.Column="1"/>
+
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
 
 
-                                </Grid>
+					</Grid>
                     
                 </PivotItem>
                 <PivotItem Header="Manage Data Sources" Visibility="Visible" Name="PivotSources">
