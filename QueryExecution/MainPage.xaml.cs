@@ -19,6 +19,7 @@ using System.Text;
 using Microsoft.Data.Sqlite;
 using System.Windows;
 using System.Collections.ObjectModel;
+using MoreLinq;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -120,7 +121,7 @@ namespace QueryExecution
             }
             if (rootPivot.SelectedIndex == 0)
             {
-                var results = from connect in context.dataconnections
+                var temp = from connect in context.dataconnections
                               join table in context.datatables on connect.id equals table.DataConnectionId
                               select new { Connection = connect.Name, Table = table.TableName, ID=table.ID};
 
@@ -131,6 +132,7 @@ namespace QueryExecution
                                select new { connectionid = table.DataConnectionId, tablename = table.TableName,
                                  id = table.ID};
 
+                var results = temp.DistinctBy(z=>String.Concat(z.Connection,z.Table));
                 string previousConn = "";
                 foreach (var result in results)
                 {
@@ -141,7 +143,7 @@ namespace QueryExecution
                             tableName = result.Table,
                             color = "blue",
                             connectionName = result.Connection,
-                            image = "/Assets/plus-sign-22.jpg",
+                            image = "",
                             visibility = "Visible",
                             id = result.ID
                         });
@@ -153,7 +155,7 @@ namespace QueryExecution
                             tableName = result.Connection,
                             color = "orange",
                             connectionName = result.Connection,
-                           image = "",
+                           image = "/Assets/plus-sign-22.jpg",
                             visibility = "Visible",
                             id = result.ID
                         });
